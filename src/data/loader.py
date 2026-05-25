@@ -18,3 +18,9 @@ def load_skab(base_path="data/raw/SKAB"):
             
     combined_df = pd.concat(all_data, ignore_index=True)
     return combined_df
+
+def load_batadal(file_path="data/raw/BATADAL/BATADAL_dataset04.csv"):
+    """BATADAL Training Dataset 2 verisini yükler."""
+    # Etiket sütununun adı projede kontrol edilmeli (genelde 'ATTACK' veya 'L_T1')
+    df = pd.read_csv(file_path)
+    return df
