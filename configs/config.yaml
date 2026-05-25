@@ -1,0 +1,11 @@
+data:
+  skab_path: "data/raw/SKAB"
+  batadal_path: "data/raw/BATADAL/BATADAL_dataset04.csv"
+automata:
+  window_size: 4
+  alphabet_size: 3
+training:
+  max_epochs: 50
+  batch_size: 32
+  patience: 5
+  random_seeds: [42, 123, 2026, 7, 999]
