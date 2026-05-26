@@ -1,11 +1,37 @@
 data:
   skab_path: "data/raw/SKAB"
   batadal_path: "data/raw/BATADAL/BATADAL_dataset04.csv"
+
 automata:
   window_size: 4
   alphabet_size: 3
+  # Parametre varyasyonu icin aralik degerleri
+  window_size_range: [3, 4, 5, 6]
+  alphabet_size_range: [3, 4, 5, 6]
+
 training:
   max_epochs: 50
   batch_size: 32
   patience: 5
   random_seeds: [42, 123, 2026, 7, 999]
+
+models:
+  lstm:
+    units_layer1: 64
+    units_layer2: 32
+    dropout: 0.2
+  gru:
+    units_layer1: 64
+    units_layer2: 32
+    dropout: 0.2
+  cnn1d:
+    filters_layer1: 64
+    filters_layer2: 128
+    kernel_size: 3
+    dropout: 0.3
+
+evaluation:
+  skab_n_splits: 5
+  batadal_train_ratio: 0.6
+  batadal_val_ratio: 0.2
+  batadal_test_ratio: 0.2
