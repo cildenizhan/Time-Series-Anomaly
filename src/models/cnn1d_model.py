@@ -1,18 +1,10 @@
-"""
-1D-CNN tabanli zaman serisi anomali tespit modeli.
-"""
 import numpy as np
 from tensorflow import keras
 from tensorflow.keras import layers, callbacks
 
 from .base_model import BaseModel
 
-
 class CNN1DModel(BaseModel):
-    """
-    1D Convolutional Neural Network modeli.
-    Yerel zaman serisi desenlerini yakalamak icin evrişimsel katmanlar kullanir.
-    """
 
     def __init__(self, config: dict):
         super().__init__(config)
@@ -21,14 +13,7 @@ class CNN1DModel(BaseModel):
         self.batch_size  = self.training_cfg.get("batch_size", 32)
         self.patience    = self.training_cfg.get("patience", 5)
 
-    # ------------------------------------------------------------------
     def build(self, input_shape: tuple) -> None:
-        """
-        1D-CNN mimarisini olusturur.
-
-        Args:
-            input_shape: (timesteps, features) tuple'i.
-        """
         inp = keras.Input(shape=input_shape, name="input")
 
         x = layers.Conv1D(64, kernel_size=3, activation="relu",
@@ -49,15 +34,8 @@ class CNN1DModel(BaseModel):
             metrics=["accuracy"]
         )
 
-    # ------------------------------------------------------------------
     def train(self, X_train: np.ndarray, y_train: np.ndarray,
               X_val: np.ndarray, y_val: np.ndarray) -> dict:
-        """
-        Early stopping ile modeli egitir.
-
-        Returns:
-            history.history sozlugu.
-        """
         if self.model is None:
             raise RuntimeError("Once build() ile model olusturun.")
 
@@ -78,21 +56,13 @@ class CNN1DModel(BaseModel):
         self.is_trained = True
         return self.history.history
 
-    # ------------------------------------------------------------------
     def predict(self, X: np.ndarray) -> np.ndarray:
-        """
-        Sigmoid cikisini esik degerle (0.5) ikili sinifa donusturur.
-
-        Returns:
-            0/1 dizisi.
-        """
         if not self.is_trained:
             raise RuntimeError("Model henuz egitilmedi. Once train() cagirin.")
         probs = self.model.predict(X, verbose=0).flatten()
         return (probs >= 0.5).astype(int)
 
     def predict_proba(self, X: np.ndarray) -> np.ndarray:
-        """Ham sigmoid olasilik degerlerini dondurur."""
         if not self.is_trained:
             raise RuntimeError("Model henuz egitilmedi.")
         return self.model.predict(X, verbose=0).flatten()
