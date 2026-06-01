@@ -1,40 +1,19 @@
-"""
-Deney sonuc raporu uretici.
-Tum deneylerin sonuclarini ozetleyen ve karsilastiran rapor modulu.
-"""
 import json
 import datetime
 from typing import List, Dict, Optional
 
 from .metrics import compute_fold_stats
 
-
 class ExperimentReport:
-    """
-    Deney sonuclarini derleyip raporlayan sinif.
-
-    Her senaryo (original, noisy, unseen) icin ayri istatistikler uretir
-    ve karsilastirmali bir ozet tablo olusturur.
-    """
 
     def __init__(self, experiment_name: str = "anomaly_detection"):
         self.experiment_name = experiment_name
         self.timestamp       = datetime.datetime.now().isoformat()
         self.sections: List[Dict] = []
 
-    # ------------------------------------------------------------------
     def add_section(self, scenario: str, dataset: str,
                     fold_results: List[Dict],
                     stat_test: Optional[Dict] = None) -> None:
-        """
-        Rapora yeni bir bolum ekler.
-
-        Args:
-            scenario:     'original', 'noisy' veya 'unseen'.
-            dataset:      'SKAB' veya 'BATADAL'.
-            fold_results: Her fold/seed icin compute_metrics() ciktisi.
-            stat_test:    Istatistiksel test sonucu (opsiyonel).
-        """
         stats = compute_fold_stats(fold_results)
         section = {
             "scenario":   scenario,
@@ -45,24 +24,18 @@ class ExperimentReport:
         }
         self.sections.append(section)
 
-    # ------------------------------------------------------------------
     def to_dict(self) -> Dict:
-        """Raporun tam sozluk temsilini dondurur."""
         return {
             "experiment": self.experiment_name,
             "timestamp":  self.timestamp,
             "sections":   self.sections,
         }
 
-    # ------------------------------------------------------------------
     def to_json(self, indent: int = 2) -> str:
-        """Raporu JSON string'e donusturur."""
         return json.dumps(self.to_dict(), ensure_ascii=False, indent=indent,
                           default=str)
 
-    # ------------------------------------------------------------------
     def print_summary(self) -> None:
-        """Karsilastirmali ozet tabloyu ekrana yazdirir."""
         print(f"\n{'='*60}")
         print(f"DENEY RAPORU: {self.experiment_name}")
         print(f"Tarih: {self.timestamp}")

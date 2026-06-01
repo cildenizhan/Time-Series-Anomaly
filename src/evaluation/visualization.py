@@ -1,25 +1,11 @@
-"""
-Gorsellestirme modulu.
-Otomata durum diyagrami, gecis olasiligi heatmap ve performans grafikleri.
-"""
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 from typing import List, Dict, Optional
 
-
 def plot_transition_heatmap(matrix: np.ndarray, labels: List[str],
                             title: str = "Gecis Olasiligi Heatmap",
                             save_path: Optional[str] = None) -> None:
-    """
-    Gecis olasilik matrisini heatmap olarak gorseller.
-
-    Args:
-        matrix:    (N, N) gecis olasilik matrisi.
-        labels:    Durum etiketleri listesi.
-        title:     Grafik basligi.
-        save_path: Kaydedilecek dosya yolu (None ise gosterilir).
-    """
     fig, ax = plt.subplots(figsize=(max(6, len(labels)), max(5, len(labels))))
     im = ax.imshow(matrix, cmap="Blues", vmin=0, vmax=1)
     plt.colorbar(im, ax=ax, label="Gecis Olasiligi")
@@ -32,7 +18,6 @@ def plot_transition_heatmap(matrix: np.ndarray, labels: List[str],
     ax.set_ylabel("Kaynak Durum")
     ax.set_title(title)
 
-    # Hucre degerleri
     for i in range(len(labels)):
         for j in range(len(labels)):
             val = matrix[i, j]
@@ -48,20 +33,10 @@ def plot_transition_heatmap(matrix: np.ndarray, labels: List[str],
     else:
         plt.show()
 
-
 def plot_confusion_matrix(cm: List[List[int]],
                           labels: List[str] = None,
                           title: str = "Confusion Matrix",
                           save_path: Optional[str] = None) -> None:
-    """
-    Confusion matrix'i gorseller.
-
-    Args:
-        cm:        2x2 confusion matrix (liste veya ndarray).
-        labels:    Sinif etiketleri (varsayilan: ['Normal', 'Anomaly']).
-        title:     Grafik basligi.
-        save_path: Kaydedilecek dosya yolu.
-    """
     cm_arr = np.array(cm)
     labels = labels or ["Normal", "Anomali"]
 
@@ -86,20 +61,10 @@ def plot_confusion_matrix(cm: List[List[int]],
     else:
         plt.show()
 
-
 def plot_path_probabilities(probs: List[float],
                             threshold: float = 0.05,
                             title: str = "Yol Olasiliklari",
                             save_path: Optional[str] = None) -> None:
-    """
-    Zaman adimlarindaki yol olasiliklerini cizgi grafik olarak gorseller.
-
-    Args:
-        probs:     Her zaman adimi icin yol olasiligi listesi.
-        threshold: Anomali esigi (kirmizi yatay cizgi).
-        title:     Grafik basligi.
-        save_path: Kaydedilecek dosya yolu.
-    """
     fig, ax = plt.subplots(figsize=(12, 4))
     x = range(len(probs))
     ax.plot(x, probs, color="steelblue", linewidth=1.2, label="Yol Olasiligi")
