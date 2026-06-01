@@ -1,6 +1,3 @@
-"""
-explainability paketi — olasılıksal acıklanabilirlik modulu.
-"""
 from .explainer import Explainer
 from .confidence import compute_confidence_score
 from .output_formatter import format_decision
