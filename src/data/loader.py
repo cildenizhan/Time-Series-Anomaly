@@ -3,7 +3,6 @@ import glob
 import os
 from pathlib import Path
 def load_skab(base_path="data/raw/SKAB"):
-    """SKAB veri setini valve1 ve valve2 klasörlerinden okuyup birleştirir."""
     all_data = []
     
     for folder in ['valve1', 'valve2']:
@@ -20,7 +19,5 @@ def load_skab(base_path="data/raw/SKAB"):
     return combined_df
 
 def load_batadal(file_path="data/raw/BATADAL/BATADAL_dataset04.csv"):
-    """BATADAL Training Dataset 2 verisini yükler."""
-    # Etiket sütununun adı projede kontrol edilmeli (genelde 'ATTACK' veya 'L_T1')
     df = pd.read_csv(file_path)
     return df

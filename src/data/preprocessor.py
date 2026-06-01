@@ -8,7 +8,6 @@ class TimeSeriesPreprocessor:
         self.is_fitted = False
         
     def fit_transform(self, X):
-        """Normalizasyon ve PCA sadece train verisi uzerinde fit edilmelidir."""
         X_scaled = self.scaler.fit_transform(X)
         if self.pca:
             X_scaled = self.pca.fit_transform(X_scaled)
@@ -16,7 +15,6 @@ class TimeSeriesPreprocessor:
         return X_scaled
         
     def transform(self, X):
-        """Validation ve Test verisine ayni donusum uygulanir."""
         if not self.is_fitted:
             raise ValueError("Preprocessor henuz fit edilmedi!")
         X_scaled = self.scaler.transform(X)
