@@ -1,18 +1,9 @@
-"""
-Aciklanabilirlik modulu icin birim testler.
-Explainer, confidence ve output_formatter siniflarini dogrular.
-"""
 import pytest
 from unittest.mock import MagicMock
 
 from src.explainability.confidence import compute_confidence_score, confidence_label
 from src.explainability.output_formatter import format_decision, to_json, to_table_row
 from src.automata.unseen_handler import levenshtein_distance, find_nearest_pattern, UnseenHandler
-
-
-# ======================================================================
-# Levenshtein Testleri
-# ======================================================================
 
 class TestLevenshtein:
     def test_identical_strings(self):
@@ -27,11 +18,6 @@ class TestLevenshtein:
 
     def test_completely_different(self):
         assert levenshtein_distance("abc", "xyz") == 3
-
-
-# ======================================================================
-# UnseenHandler Testleri
-# ======================================================================
 
 class TestUnseenHandler:
     def setup_method(self):
@@ -55,11 +41,6 @@ class TestUnseenHandler:
         assert nearest == "abc"
         assert dist == 1
 
-
-# ======================================================================
-# Confidence Score Testleri
-# ======================================================================
-
 class TestConfidenceScore:
     def test_low_probability_is_anomaly(self):
         score, decision = compute_confidence_score(0.01)
@@ -71,7 +52,6 @@ class TestConfidenceScore:
 
     def test_threshold_boundary(self):
         score, decision = compute_confidence_score(0.05)
-        # 0.05 esik degerinde normal olmali (>= degil < kontrolu)
         assert decision == "normal"
 
     def test_confidence_label_low(self):
@@ -82,11 +62,6 @@ class TestConfidenceScore:
 
     def test_confidence_label_high(self):
         assert confidence_label(0.9) == "High"
-
-
-# ======================================================================
-# Output Formatter Testleri
-# ======================================================================
 
 class TestOutputFormatter:
     def test_format_decision_keys(self):
