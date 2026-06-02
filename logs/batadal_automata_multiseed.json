@@ -1,0 +1,20 @@
+{
+    "accuracy_mean": 0.9758551307847082,
+    "accuracy_std": 0.0,
+    "precision_mean": 0.0,
+    "precision_std": 0.0,
+    "recall_mean": 0.0,
+    "recall_std": 0.0,
+    "f1_mean": 0.0,
+    "f1_std": 0.0,
+    "state_count_mean": 77.0,
+    "state_count_std": 0.0,
+    "transition_count_mean": 77.0,
+    "transition_count_std": 0.0,
+    "transition_density_mean": 0.012987012987012988,
+    "transition_density_std": 0.0,
+    "path_probability_mean": 0.0,
+    "path_probability_std": 0.0,
+    "confidence_score_mean": 0.0,
+    "confidence_score_std": 0.0
+}

@@ -1,0 +1,7 @@
+dataset,model,training_time_sec_mean,training_time_sec_std,inference_time_sec_mean,inference_time_sec_std,accuracy_mean,f1_mean,source
+skab,automata,0.3648,0.0,0.0,0.0,0.631,0.0236,measured_end_to_end_pipeline_time
+batadal,automata,0.0403,0.0,0.0,0.0,0.8354,0.2703,measured_end_to_end_pipeline_time
+batadal,cnn,86.8981,17.8485,0.6147,0.4325,0.7536,0.6276,dl_experiment_summary
+batadal,lstm,242.6546,64.5634,1.007,0.1633,0.663,0.2197,dl_experiment_summary
+skab,cnn,164.8927,101.9135,2.2889,1.636,0.5384,0.0843,dl_experiment_summary
+skab,lstm,518.9486,221.3806,7.6417,6.5361,0.5266,0.1409,dl_experiment_summary

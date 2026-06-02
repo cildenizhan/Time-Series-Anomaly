@@ -1,0 +1,3 @@
+dataset,fold,file,total_steps,seen_count,unseen_count,unseen_rate,mapped_unseen_count,mapped_unseen_rate,mean_edit_distance,max_edit_distance,anomaly_count,anomaly_rate,mean_transition_probability,min_transition_probability,zero_probability_transition_count
+skab,0,skab_explainability.json,497,497,0,0.0,0,0,0.0,0,0,0.0,0.9630583501006036,0,0
+batadal,0,batadal_explainability.json,497,497,0,0.0,0,0,0.0,0,12,0.02414486921529175,0.5888609839034205,0,0
