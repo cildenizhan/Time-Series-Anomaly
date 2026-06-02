@@ -1,10 +1,3 @@
-"""
-Uctan uce pipeline modulu.
-
-Veri yukleme -> on isleme -> pencere olusturma ->
-PAA/SAX donusumu -> otomata egitimi/tahmini -> aciklama
-asamalarini tek bir arayuzde birlestiren Pipeline sinifi.
-"""
 import numpy as np
 import logging
 from typing import Optional
@@ -23,14 +16,7 @@ from src.explainability.explainer import Explainer
 
 logger = logging.getLogger(__name__)
 
-
 class Pipeline:
-    """
-    Tam anomali tespit pipeline'i.
-
-    config.yaml uzerinden tum parametreleri okur ve
-    modulleri sirasi ile calistirir.
-    """
 
     def __init__(self, config_path: str = "configs/config.yaml"):
         self.cfg          = load_config(config_path)
@@ -43,61 +29,32 @@ class Pipeline:
         self.unseen:       Optional[UnseenHandler]          = None
         self.explainer:    Optional[Explainer]              = None
 
-    # ------------------------------------------------------------------
     def fit(self, X_train: np.ndarray) -> "Pipeline":
-        """
-        Egitim verisiyle pipeline'i egitir.
-
-        Normalizasyon -> Pencere -> PAA -> SAX -> Otomata adimlari.
-
-        Args:
-            X_train: Ham egitim verisi. Sekil: (T, F) veya (T,)
-
-        Returns:
-            self
-        """
         logger.info("Pipeline egitimi basliyor...")
 
-        # 1. On isleme
         self.preprocessor = TimeSeriesPreprocessor(use_pca=True)
         X_scaled = self.preprocessor.fit_transform(X_train)
         X_1d     = X_scaled.flatten()
 
-        # 2. Pencere olustur
         windows, _ = extract_windows(X_1d, self.window_size)
 
-        # 3. PAA
         paa_matrix = batch_paa(windows, self.window_size)
 
-        # 4. SAX
         self.sax_encoder = SAXEncoder(self.alphabet_size)
         sax_words        = self.sax_encoder.encode_batch(paa_matrix)
 
-        # 5. Otomata
         self.builder = AutomataBuilder().fit(sax_words)
 
-        # 6. Pattern sozlugu & Unseen handler
         pattern_dict = build_pattern_dict(sax_words)
         self.unseen  = UnseenHandler(list(pattern_dict.keys()))
 
-        # 7. Explainer
         self.explainer = Explainer(self.builder, self.unseen)
 
         logger.info("Pipeline egitimi tamamlandi. Durum sayisi: %d",
                     len(self.builder.states))
         return self
 
-    # ------------------------------------------------------------------
     def predict(self, X_test: np.ndarray) -> dict:
-        """
-        Test verisi uzerinde anomali tespiti yapar.
-
-        Args:
-            X_test: Ham test verisi.
-
-        Returns:
-            predictions, path_probabilities, explanations icerik sozlugu.
-        """
         if self.preprocessor is None:
             raise RuntimeError("Once fit() cagirin.")
 
