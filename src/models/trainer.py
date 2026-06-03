@@ -1,6 +1,8 @@
 import numpy as np
 import time
+import random
 import logging
+import torch
 
 logger = logging.getLogger(__name__)
 
@@ -14,11 +16,11 @@ class ModelTrainer:
 
     @staticmethod
     def _set_seed(seed: int) -> None:
-        import tensorflow as tf
-        import random
         random.seed(seed)
         np.random.seed(seed)
-        tf.random.set_seed(seed)
+        torch.manual_seed(seed)
+        if torch.cuda.is_available():
+            torch.cuda.manual_seed_all(seed)
 
     def run(self, X_train: np.ndarray, y_train: np.ndarray,
             X_val: np.ndarray, y_val: np.ndarray,
@@ -27,18 +29,18 @@ class ModelTrainer:
                     self.model.__class__.__name__, self.seed)
         self.model.build(input_shape)
 
-        start = time.time()
+        start   = time.time()
         history = self.model.train(X_train, y_train, X_val, y_val)
         elapsed = time.time() - start
 
         result = {
-            "model":    self.model.__class__.__name__,
-            "seed":     self.seed,
-            "epochs":   len(history.get("loss", [])),
-            "val_loss": history.get("val_loss", [None])[-1],
-            "val_acc":  history.get("val_accuracy", [None])[-1],
+            "model":     self.model.__class__.__name__,
+            "seed":      self.seed,
+            "epochs":    len(history.get("loss", [])),
+            "val_loss":  history.get("val_loss", [None])[-1],
+            "val_acc":   history.get("val_accuracy", [None])[-1],
             "train_sec": round(elapsed, 2),
-            "history":  history,
+            "history":   history,
         }
 
         logger.info("Egitim tamamlandi — %s epoch, %.2fs", result["epochs"], elapsed)

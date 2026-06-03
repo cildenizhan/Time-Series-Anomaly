@@ -6,30 +6,28 @@ from torch.utils.data import DataLoader, TensorDataset
 from .base_model import BaseModel
 
 
-class _CNN1DNet(nn.Module):
+class _GRUNet(nn.Module):
     def __init__(self, input_size):
         super().__init__()
-        self.conv1 = nn.Conv1d(input_size, 64,  kernel_size=3, padding=1)
-        self.bn1   = nn.BatchNorm1d(64)
-        self.conv2 = nn.Conv1d(64,         128, kernel_size=3, padding=1)
-        self.bn2   = nn.BatchNorm1d(128)
+        self.gru1  = nn.GRU(input_size, 64, batch_first=True)
+        self.drop1 = nn.Dropout(0.2)
+        self.gru2  = nn.GRU(64, 32, batch_first=True)
+        self.drop2 = nn.Dropout(0.2)
+        self.fc1   = nn.Linear(32, 16)
         self.relu  = nn.ReLU()
-        self.drop  = nn.Dropout(0.3)
-        self.fc1   = nn.Linear(128, 32)
-        self.fc2   = nn.Linear(32, 1)
+        self.fc2   = nn.Linear(16, 1)
         self.sig   = nn.Sigmoid()
 
     def forward(self, x):
-        x = x.permute(0, 2, 1)
-        x = self.relu(self.bn1(self.conv1(x)))
-        x = self.relu(self.bn2(self.conv2(x)))
-        x = x.mean(dim=2)
-        x = self.drop(x)
-        x = self.relu(self.fc1(x))
-        return self.sig(self.fc2(x)).squeeze(1)
+        out, _ = self.gru1(x)
+        out    = self.drop1(out)
+        out, _ = self.gru2(out)
+        out    = self.drop2(out[:, -1, :])
+        out    = self.relu(self.fc1(out))
+        return self.sig(self.fc2(out)).squeeze(1)
 
 
-class CNN1DModel(BaseModel):
+class GRUModel(BaseModel):
 
     def __init__(self, config: dict):
         super().__init__(config)
@@ -41,7 +39,7 @@ class CNN1DModel(BaseModel):
 
     def build(self, input_shape: tuple) -> None:
         input_size   = input_shape[1]
-        self.model   = _CNN1DNet(input_size).to(self.device)
+        self.model   = _GRUNet(input_size).to(self.device)
         self.history = {"loss": [], "val_loss": [], "val_accuracy": []}
 
     def train(self, X_train: np.ndarray, y_train: np.ndarray,
